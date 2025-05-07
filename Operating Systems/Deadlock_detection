@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define N 5  // Number of processes
+#define M 3  // Number of resource types
+
+int main() {
+    int Allocation[N][M] = {
+        {0, 1, 0},
+        {2, 0, 0},
+        {3, 0, 2},
+        {2, 1, 1},
+        {0, 0, 2}
+    };
+
+    int Request[N][M] = {
+        {0, 0, 0},
+        {2, 0, 2},
+        {0, 0, 0},
+        {1, 0, 0},
+        {0, 0, 2}
+    };
+
+    int Available[M] = {1, 0, 0};
+
+    bool Finish[N] = {false};
+    int Work[M];
+
+    // Initialize Work = Available
+    for (int i = 0; i < M; i++)
+        Work[i] = Available[i];
+
+    int completed = 0;
+
+    while (completed < N) {
+        bool found = false;
+        for (int i = 0; i < N; i++) {
+            if (!Finish[i]) {
+                bool canFinish = true;
+                for (int j = 0; j < M; j++) {
+                    if (Request[i][j] > Work[j]) {
+                        canFinish = false;
+                        break;
+                    }
+                }
+                if (canFinish) {
+                    for (int j = 0; j < M; j++)
+                        Work[j] += Allocation[i][j];
+                    Finish[i] = true;
+                    completed++;
+                    found = true;
+                }
+            }
+        }
+        if (!found)
+            break;
+    }
+
+    if (completed == N) {
+        printf("No deadlock detected. All processes can complete.\n");
+    } else {
+        printf("Deadlock detected among the following processes: ");
+        for (int i = 0; i < N; i++)
+            if (!Finish[i])
+                printf("P%d ", i);
+        printf("\n");
+    }
+
+    return 0;
+}
