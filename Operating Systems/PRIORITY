@@ -1,110 +1,140 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-struct Process {
-    int pid;
-    int bt;
-    int wt;
-    int tat;
-    int priority;
-    int remaining_bt;
-};
+int main() {
+    int n;
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
 
-void calculateWTAndTAT(struct Process proc[], int n) {
+    int at[n], bt[n], ct[n], tat[n], wt[n], pr[n], pid[n];
+    int temp;
+
     for (int i = 0; i < n; i++) {
-        proc[i].tat = proc[i].wt + proc[i].bt;
+        pid[i] = i + 1;
+        printf("Enter Arrival Time, Burst Time and Priority for Process %d: ", pid[i]);
+        scanf("%d %d %d", &at[i], &bt[i], &pr[i]);
     }
-}
-
-void displayResults(struct Process proc[], int n) {
-    printf("PID\tBurst Time\tWaiting Time\tTurnaround Time\n");
-    for (int i = 0; i < n; i++) {
-        printf("%d\t%d\t\t%d\t\t%d\n", proc[i].pid, proc[i].bt, proc[i].wt, proc[i].tat);
-    }
-}
-
-void prioritySchedulingNonPreemptive(struct Process proc[], int n) {
-    int total_wt = 0, total_tat = 0;
-
-    for (int i = 0; i < n-1; i++) {
-        for (int j = i+1; j < n; j++) {
-            if (proc[i].priority > proc[j].priority) {
-                struct Process temp = proc[i];
-                proc[i] = proc[j];
-                proc[j] = temp;
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (at[i] > at[j] || (at[i] == at[j] && pr[i] > pr[j])) {
+                // Swap all relevant data
+                temp = at[i]; at[i] = at[j]; at[j] = temp;
+                temp = bt[i]; bt[i] = bt[j]; bt[j] = temp;
+                temp = pr[i]; pr[i] = pr[j]; pr[j] = temp;
+                temp = pid[i]; pid[i] = pid[j]; pid[j] = temp;
             }
         }
     }
 
-    proc[0].wt = 0;
-    for (int i = 1; i < n; i++) {
-        proc[i].wt = proc[i-1].wt + proc[i-1].bt;
-        total_wt += proc[i].wt;
-    }
+    int sum = 0;
+    int completed[n];
+    for (int i = 0; i < n; i++) completed[i] = 0;
 
-    calculateWTAndTAT(proc, n);
+    int count = 0;
+    while (count < n) {
+        int idx = -1;
+        int min_priority = 1e9;
 
-    displayResults(proc, n);
-    printf("Average Waiting Time: %.2f\n", total_wt / (float)n);
-    printf("Average Turnaround Time: %.2f\n", total_tat / (float)n);
-}
-
-void prioritySchedulingPreemptive(struct Process proc[], int n) {
-    int total_wt = 0, total_tat = 0;
-    int time = 0;
-
-    for (int i = 0; i < n-1; i++) {
-        for (int j = i+1; j < n; j++) {
-            if (proc[i].priority > proc[j].priority) {
-                struct Process temp = proc[i];
-                proc[i] = proc[j];
-                proc[j] = temp;
-            }
-        }
-    }
-
-    while (1) {
-        int done = 1;
         for (int i = 0; i < n; i++) {
-            if (proc[i].remaining_bt > 0) {
-                done = 0;
-                time++;
-                proc[i].remaining_bt--;
-
-                if (proc[i].remaining_bt == 0) {
-                    proc[i].tat = time;
-                    proc[i].wt = proc[i].tat - proc[i].bt;
-                    total_wt += proc[i].wt;
-                    total_tat += proc[i].tat;
+            if (at[i] <= sum && !completed[i]) {
+                if (pr[i] < min_priority) {
+                    min_priority = pr[i];
+                    idx = i;
                 }
             }
         }
-        if (done == 1) break;
+
+        if (idx != -1) {
+            ct[idx] = sum + bt[idx];
+            sum = ct[idx];
+            tat[idx] = ct[idx] - at[idx];
+            wt[idx] = tat[idx] - bt[idx];
+            completed[idx] = 1;
+            count++;
+        } else {
+            sum++; // No process is ready, increment time
+        }
     }
 
-    displayResults(proc, n);
-    printf("Average Waiting Time: %.2f\n", total_wt / (float)n);
-    printf("Average Turnaround Time: %.2f\n", total_tat / (float)n);
-}
-
-int main() {
-    int n, choice;
-
-    printf("Enter number of processes: ");
-    scanf("%d", &n);
-
-    struct Process proc[n];
-
+    printf("\nProcess\tAT\tBT\tPR\tCT\tTAT\tWT\n");
     for (int i = 0; i < n; i++) {
-        proc[i].pid = i + 1;
-        printf("Enter Burst Time and Priority for Process %d: ", i + 1);
-        scanf("%d %d", &proc[i].bt, &proc[i].priority);
-        proc[i].remaining_bt = proc[i].bt;
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\t%d\n", pid[i], at[i], bt[i], pr[i], ct[i], tat[i], wt[i]);
     }
 
-    prioritySchedulingNonPreemptive(proc, n);
-
-    prioritySchedulingPreemptive(proc, n);
     return 0;
 }
+OUTPUT:
+Enter the number of processes: 3
+Enter Arrival Time, Burst Time and Priority for Process 1: 0 5 2
+Enter Arrival Time, Burst Time and Priority for Process 2: 1 3 1
+Enter Arrival Time, Burst Time and Priority for Process 3: 2 2 3
 
+Process	AT	BT	PR	CT	TAT	WT
+P1	    0	5	2	5	5	0
+P2	    1	3	1	8	7	4
+P3	    2	2	3	10	8	6
+
+#include <stdio.h>
+
+int main() {
+    int n;
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+
+    int at[n], bt[n], rt[n], pr[n], ct[n], tat[n], wt[n], pid[n];
+    int completed = 0, current_time = 0, min_pri, idx;
+    int is_process_found;
+
+    for (int i = 0; i < n; i++) {
+        pid[i] = i + 1;
+        printf("Enter Arrival Time, Burst Time, and Priority for Process %d: ", pid[i]);
+        scanf("%d %d %d", &at[i], &bt[i], &pr[i]);
+        rt[i] = bt[i]; // remaining time
+    }
+
+    while (completed != n) {
+        min_pri = 1e9;
+        idx = -1;
+        is_process_found = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (at[i] <= current_time && rt[i] > 0) {
+                if (pr[i] < min_pri) {
+                    min_pri = pr[i];
+                    idx = i;
+                    is_process_found = 1;
+                }
+            }
+        }
+
+        if (is_process_found) {
+            rt[idx]--;
+            current_time++;
+
+            if (rt[idx] == 0) {
+                completed++;
+                ct[idx] = current_time;
+                tat[idx] = ct[idx] - at[idx];
+                wt[idx] = tat[idx] - bt[idx];
+            }
+        } else {
+            current_time++; // Idle CPU
+        }
+    }
+
+    printf("\nProcess\tAT\tBT\tPR\tCT\tTAT\tWT\n");
+    for (int i = 0; i < n; i++) {
+        printf("P%d\t%d\t%d\t%d\t%d\t%d\t%d\n", pid[i], at[i], bt[i], pr[i], ct[i], tat[i], wt[i]);
+    }
+
+    return 0;
+}
+OUTPUT:
+Enter the number of processes: 3
+Enter Arrival Time, Burst Time, and Priority for Process 1: 0 5 2
+Enter Arrival Time, Burst Time, and Priority for Process 2: 1 3 1
+Enter Arrival Time, Burst Time, and Priority for Process 3: 2 2 3
+
+Process	AT	BT	PR	CT	TAT	WT
+P1	    0	5	2	10	10	5
+P2	    1	3	1	4	3	0
+P3	    2	2	3	12	10	8
