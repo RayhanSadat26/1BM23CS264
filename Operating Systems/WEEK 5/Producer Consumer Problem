@@ -66,3 +66,25 @@ int main() {
 
     return 0;
 }
+
+OUPUT:
+Producer produced: 23
+Consumer consumed: 23
+Producer produced: 67
+Consumer consumed: 67
+Producer produced: 45
+Consumer consumed: 45
+Producer produced: 12
+Consumer consumed: 12
+Producer produced: 89
+Consumer consumed: 89
+Producer produced: 34
+Consumer consumed: 34
+Producer produced: 78
+Consumer consumed: 78
+Producer produced: 56
+Consumer consumed: 56
+Producer produced: 90
+Consumer consumed: 90
+Producer produced: 11
+Consumer consumed: 11
