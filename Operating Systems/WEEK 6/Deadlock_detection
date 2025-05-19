@@ -68,3 +68,6 @@ int main() {
 
     return 0;
 }
+
+OUTPUT:
+No deadlock detected. All processes can complete.
