@@ -83,3 +83,18 @@ int main() {
     return 0;
 }
 
+OUTPUT:
+Enter number of processes: 4
+Enter Burst Time for Process 1: 5
+Enter Burst Time for Process 2: 15
+Enter Burst Time for Process 3: 4
+Enter Burst Time for Process 4: 3
+Enter the quantum size for Round Robin: 5
+PID	Burst Time	Waiting Time	Turnaround Time
+1	5		0		5
+2	15		12		27
+3	4		10		14
+4	3		14		17
+Average Waiting Time: 9.00
+Average Turnaround Time: 15.75
+
