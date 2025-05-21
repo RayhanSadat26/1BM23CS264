@@ -1,0 +1,56 @@
+#include <stdio.h>
+
+void merge(int b[], int c[], int a[], int p, int q) {
+    int i = 0, j = 0, k = 0;
+
+    while (i < p && j < q) {
+        if (b[i] < c[j]) {
+            a[k++] = b[i++];
+        } else {
+            a[k++] = c[j++];
+        }
+    }
+
+    while (i < p) {
+        a[k++] = b[i++];
+    }
+
+    while (j < q) {
+        a[k++] = c[j++];
+    }
+}
+
+void quicksort(int arr[], int n) {
+    if (n <= 1)
+        return;
+
+    int mid = n / 2;
+    int b[mid], c[n - mid];
+
+    for (int i = 0; i < mid; i++) {
+        b[i] = arr[i];
+    }
+
+    for (int i = mid; i < n; i++) {
+        c[i - mid] = arr[i];
+    }
+
+    quicksort(b, mid);
+    quicksort(c, n - mid);
+    merge(b, c, arr, mid, n - mid);
+}
+
+int main() {
+    int arr[] = {10, 5, 3, 1, 2};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    quicksort(arr, n);
+
+    printf("Sorted array: ");
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
