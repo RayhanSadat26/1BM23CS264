@@ -1,0 +1,45 @@
+#include <stdio.h>
+#define INF 9999
+int main()
+{
+    int V;
+    printf("Enter no of vertices in your graph");
+    scanf("%d",&V);
+    int dist[V][V];
+    for(int i=0;i<V;i++)
+    {
+        for(int j=0;j<V;j++)
+        {
+            printf("Enter value of dist[%d][%d] here:",i+1,j+1);
+            scanf("%d",&dist[i][j]);
+        }
+    }
+    for(int k=0;k<V;k++)
+    {
+        for(int i=0;i<V;i++)
+        {
+            for(int j=0;j<V;j++)
+            {
+                if(dist[i][k]+dist[k][j]<dist[i][j])
+                {
+                    dist[i][j]=dist[i][k]+dist[k][j];
+                }
+            }
+        }
+    }
+    for(int i=0;i<V;i++)
+    {
+        for(int j=0;j<V;j++)
+        {
+            if(dist[i][j]==INF)
+            {
+                printf("%s","INF");
+            }
+            else
+            {
+                printf("%d  ",dist[i][j]);
+            }
+        }
+        printf("\n");
+    }
+}
