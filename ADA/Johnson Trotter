@@ -1,0 +1,72 @@
+#include <stdio.h>
+#define SIZE 4
+#define LEFT -1
+#define RIGHT 1
+
+void printpermutation(int a[]) {
+    for (int i = 0; i < SIZE; i++)
+        printf("%d ", a[i]);
+    printf("\n");
+}
+
+int ismobile(int a[], int dir[], int i) {
+    if (dir[i] == LEFT && i > 0 && a[i] > a[i - 1])
+        return 1;
+    if (dir[i] == RIGHT && i < SIZE - 1 && a[i] > a[i + 1])
+        return 1;
+    return 0;
+}
+
+int getmobile(int a[], int dir[]) {
+    int mobile = -1;
+    for (int i = 0; i < SIZE; i++) {
+        if (ismobile(a, dir, i)) {
+            if (mobile == -1 || a[i] > a[mobile])
+                mobile = i;
+        }
+    }
+    return mobile;
+}
+
+void swap(int *x, int *y) {
+    int temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+void JT() {
+    int a[SIZE], dir[SIZE];
+
+    for (int i = 0; i < SIZE; i++) {
+        a[i] = i + 1;
+        dir[i] = LEFT;
+    }
+
+    printpermutation(a);
+
+    while (1) {
+        int mobileindex = getmobile(a, dir);
+        if (mobileindex == -1)
+        {
+            break;
+        }
+        int swapwith = mobileindex + dir[mobileindex];      
+        swap(&a[mobileindex], &a[swapwith]);
+        swap(&dir[mobileindex], &dir[swapwith]);
+        int mobile = a[swapwith];
+        for (int i = 0; i < SIZE; i++) 
+        {
+            if (a[i] > mobile)
+            {
+                dir[i] = -dir[i];
+            }
+        }
+
+        printpermutation(a);
+    }
+}
+
+int main() {
+    JT();
+    return 0;
+}
