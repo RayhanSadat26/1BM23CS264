@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include <time.h>
 void merge(int b[], int c[], int a[], int p, int q) {
     int i = 0, j = 0, k = 0;
 
@@ -43,14 +43,16 @@ void mergesort(int arr[], int n) {
 int main() {
     int arr[] = {10, 5, 3, 1, 2};
     int n = sizeof(arr) / sizeof(arr[0]);
-
+    clock_t start=clock();
     mergesort(arr, n);
-
+    clock_t end = clock();
+    double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
     printf("Sorted array: ");
     for (int i = 0; i < n; i++) {
         printf("%d ", arr[i]);
     }
     printf("\n");
+    printf("Time taken:%f seconds",time_taken);
 
     return 0;
 }
