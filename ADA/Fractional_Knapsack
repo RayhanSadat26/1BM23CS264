@@ -1,0 +1,54 @@
+#include<stdio.h>
+void main()
+{
+    int n;
+    printf("Enter no of items");
+    scanf("%d",&n);
+    float weights[n],profit[n],ratio[n],Total_profit=0,temp;
+    int capacity;
+    for(int i=0;i<n;i++)
+    {
+        printf("Enter weight and profit of your item %d  ",i+1);
+        scanf("%f %f",&weights[i],&profit[i]);
+        ratio[i]=profit[i]/weights[i];
+    }
+    printf("Enter the capacity of your bag");
+    scanf("%d",&capacity);
+    for(int i=0;i<n;i++)
+    {
+        for(int j=i+1;j<n;j++)
+        {
+            if(ratio[i]<ratio[j])
+            {
+                temp=ratio[i];
+                ratio[i]=ratio[j];
+                ratio[j]=temp;
+                temp=weights[i];
+                weights[i]=weights[j];
+                weights[j]=temp;
+                temp=profit[i];
+                profit[i]=profit[j];
+                profit[j]=temp;
+            }
+        }
+    }
+    int i;
+    printf("Knapsack problems using Greedy Algorithm:\n");
+    for (i = 0; i < n; i++)
+    {
+        if (weights[i] > capacity)
+        {
+            break;
+        }
+        else
+        {
+        Total_profit = Total_profit + profit[i];
+        capacity = capacity - weights[i];
+        }
+    }
+    if (i < n)
+    {
+        Total_profit = Total_profit + (ratio[i]*capacity);
+        printf("\nThe maximum value is:%f\n",Total_profit);
+    }
+}
