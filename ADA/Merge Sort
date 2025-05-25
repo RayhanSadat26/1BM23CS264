@@ -20,7 +20,7 @@ void merge(int b[], int c[], int a[], int p, int q) {
     }
 }
 
-void quicksort(int arr[], int n) {
+void mergesort(int arr[], int n) {
     if (n <= 1)
         return;
 
@@ -35,8 +35,8 @@ void quicksort(int arr[], int n) {
         c[i - mid] = arr[i];
     }
 
-    quicksort(b, mid);
-    quicksort(c, n - mid);
+    mergesort(b, mid);
+    mergesort(c, n - mid);
     merge(b, c, arr, mid, n - mid);
 }
 
@@ -44,7 +44,7 @@ int main() {
     int arr[] = {10, 5, 3, 1, 2};
     int n = sizeof(arr) / sizeof(arr[0]);
 
-    quicksort(arr, n);
+    mergesort(arr, n);
 
     printf("Sorted array: ");
     for (int i = 0; i < n; i++) {
